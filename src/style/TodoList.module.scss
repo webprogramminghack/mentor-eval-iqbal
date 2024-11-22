@@ -1,0 +1,164 @@
+.container {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 17px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+}
+
+.inputContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 50px;
+
+  input {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+
+  .addButton {
+    background-color: #6200ea;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-left: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #5a00d1;
+    }
+  }
+}
+
+.todoList {
+  list-style-type: none;
+  padding: 0;
+
+  .todoItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+
+    label {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+
+      input {
+        margin-right: 10px;
+      }
+    }
+
+    .editButton,
+    .deleteButton {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    .editButton {
+      color: #0093dd;
+
+      &:hover {
+        color: #007acc;
+      }
+    }
+
+    .deleteButton {
+      color: #ff5a5f;
+
+      &:hover {
+        color: #e04848;
+      }
+    }
+  }
+}
+
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  text-align: center;
+
+  h2 {
+    margin-bottom: 20px;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+
+  .modalActions {
+    display: flex;
+    justify-content: space-around;
+
+    .saveButton {
+      background-color: #6200ea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #5a00d1;
+      }
+    }
+
+    .cancelButton {
+      background-color: #ccc;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #bbb;
+      }
+    }
+  }
+}
