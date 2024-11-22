@@ -16,25 +16,80 @@ export const TodoList: React.FC = () => {
 
   const addTodoMutation = useMutation({
     mutationFn: addTodo,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
-      setNewTask('');
+    onMutate: async (newTodo) => {
+      await queryClient.cancelQueries({ queryKey: ['todos'] });
+      const previousTodos = queryClient.getQueryData<Todo[]>(['todos']);
+    
+      queryClient.setQueryData<Todo[]>(['todos'], (oldTodos = []) => [
+        { id: Date.now().toString(), title: newTodo.title },
+        ...oldTodos,
+      ]);
+    
+      return { previousTodos };
+    },
+    onError: (err, _, context) => {
+      console.error('Add Todo Error:', err); 
+      if (context?.previousTodos) {
+        queryClient.setQueryData(['todos'], context.previousTodos);
+      }
+    },
+    onSettled: () => {
+      // queryClient.invalidateQueries({ queryKey: ['todos'] });
     },
   });
-
+  
   const updateTodoMutation = useMutation({
     mutationFn: updateTodo,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['todos'] }),
+    onMutate: async (updatedTodo) => {
+      await queryClient.cancelQueries({ queryKey: ['todos'] });
+      const previousTodos = queryClient.getQueryData<Todo[]>(['todos']);
+  
+      queryClient.setQueryData<Todo[]>(['todos'], (oldTodos = []) =>
+        oldTodos.map((todo) =>
+          todo.id === updatedTodo.id ? { ...todo, title: updatedTodo.title } : todo
+        )
+      );
+  
+      return { previousTodos };
+    },
+    onError: (err, _, context) => {
+      console.error('Update Todo Error:', err); 
+      if (context?.previousTodos) {
+        queryClient.setQueryData(['todos'], context.previousTodos);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
+    },
   });
-
+  
   const deleteTodoMutation = useMutation({
     mutationFn: deleteTodo,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['todos'] }),
-  });
+    onMutate: async (deletedTodoId) => {
+      await queryClient.cancelQueries({ queryKey: ['todos'] });
+      const previousTodos = queryClient.getQueryData<Todo[]>(['todos']);
+  
+      queryClient.setQueryData<Todo[]>(['todos'], (oldTodos = []) =>
+        oldTodos.filter((todo) => todo.id !== deletedTodoId)
+      );
+  
+      return { previousTodos };
+    },
+    onError: (err, _, context) => {
+      console.error('Delete Todo Error:', err); 
+      if (context?.previousTodos) {
+        queryClient.setQueryData(['todos'], context.previousTodos);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
+    },
+  });  
 
   const handleAddTodo = () => {
     if (newTask.trim()) {
       addTodoMutation.mutate({ title: newTask });
+      setNewTask(''); 
     }
   };
 
@@ -58,7 +113,7 @@ export const TodoList: React.FC = () => {
     }
   };
 
-  if (isLoading) return <div className={styles.loading}>Loading...</div>;
+  if (isLoading) return <div className={styles.loading}>Loading Data.....</div>;
 
   return (
     <div className={styles.container}>
