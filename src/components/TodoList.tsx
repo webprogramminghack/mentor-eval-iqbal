@@ -15,7 +15,7 @@ export const TodoList: React.FC = () => {
   const [currentEditTask, setCurrentEditTask] = useState<Todo | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: todos = [], isLoading } = useQuery<Todo[]>({
+  const { data: todos = [] } = useQuery<Todo[]>({
     queryKey: ['todos'],
     queryFn: getTodos,
   });
@@ -40,7 +40,7 @@ export const TodoList: React.FC = () => {
       }
     },
     onSettled: () => {
-      // queryClient.invalidateQueries({ queryKey: ['todos'] });
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
     },
   });
 
@@ -121,54 +121,59 @@ export const TodoList: React.FC = () => {
     }
   };
 
-  if (isLoading) return <div className={styles.loading}>Loading Data.....</div>;
-
   return (
-    <div className={styles.container}>
-      <h1>Let’s Get Things Done!</h1>
-      <p>One Step Closer to Your Goals</p>
-      <div className={styles.inputContainer}>
-        <input
-          type='text'
-          placeholder='Create new task'
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-        />
-        <button onClick={handleAddTodo} className={styles.addButton}>
-          Add
-        </button>
+    <div className={styles.outerContainer}>
+  
+      <div className={styles.header}>
+        <h1>Let’s Get Things Done!</h1>
+        <p>One Step Closer to Your Goals</p>
       </div>
-      <ul className={styles.todoList}>
-        {todos.map((todo) => (
-          <li key={todo.id} className={styles.todoItem}>
-            <label>
-              <input
-                type='checkbox'
-                defaultChecked={false}
-                onChange={() =>
-                  updateTodoMutation.mutate({ id: todo.id, title: todo.title })
-                }
-              />
-              {todo.title}
-            </label>
-            <div>
-              <button
-                onClick={() => openEditModal(todo)}
-                className={styles.editButton}
-              >
-                ✏️
-              </button>
-              <button
-                onClick={() => deleteTodoMutation.mutate(todo.id)}
-                className={styles.deleteButton}
-              >
-                🗑️
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
 
+      <div className={styles.container}>
+        <div className={styles.inputContainer}>
+          <input
+            type="text"
+            placeholder="Create new task"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+          />
+          <button onClick={handleAddTodo} className={styles.addButton}>
+            Add
+          </button>
+        </div>
+        <ul className={styles.todoList}>
+          {todos.map((todo) => (
+            <li key={todo.id} className={styles.todoItem}>
+              <label>
+                <input
+                  type="checkbox"
+                  defaultChecked={false}
+                  onChange={() =>
+                    updateTodoMutation.mutate({ id: todo.id, title: todo.title })
+                  }
+                />
+                {todo.title}
+              </label>
+              <div>
+                <button
+                  onClick={() => openEditModal(todo)}
+                  className={styles.editButton}
+                >
+                  ✏️
+                </button>
+                <button
+                  onClick={() => deleteTodoMutation.mutate(todo.id)}
+                  className={styles.deleteButton}
+                >
+                  🗑️
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Modal edit data */}
       {isEditModalOpen && currentEditTask && (
         <div className={styles.modalBackdrop}>
           <div className={styles.modal}>
@@ -180,7 +185,7 @@ export const TodoList: React.FC = () => {
             </div>
             <div className={styles.modalContent}>
               <input
-                type='text'
+                type="text"
                 value={currentEditTask.title}
                 onChange={(e) =>
                   setCurrentEditTask({
@@ -193,7 +198,7 @@ export const TodoList: React.FC = () => {
             </div>
             <div className={styles.modalActions}>
               <button onClick={handleEditSave} className={styles.saveButton}>
-                Save 
+                Save
               </button>
             </div>
           </div>
