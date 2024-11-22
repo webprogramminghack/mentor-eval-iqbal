@@ -1,7 +1,7 @@
 .container {
   text-align: center;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 50px auto; 
   font-family: Arial, sans-serif;
 
   h1 {
@@ -104,61 +104,76 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7); 
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px; 
   width: 400px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   text-align: center;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 20px;
 
   h2 {
-    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
   }
 
-  input {
+  .closeButton {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #888;
+
+    &:hover {
+      color: #555;
+    }
+  }
+}
+
+.modalContent {
+  margin: 20px 0;
+
+  .modalInput {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
     font-size: 16px;
   }
+}
 
-  .modalActions {
-    display: flex;
-    justify-content: space-around;
+.modalActions {
+  display: flex;
+  justify-content: center;
 
-    .saveButton {
-      background-color: #6200ea;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
+  .saveButton {
+    background-color: #6200ea;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
 
-      &:hover {
-        background-color: #5a00d1;
-      }
-    }
-
-    .cancelButton {
-      background-color: #ccc;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #bbb;
-      }
+    &:hover {
+      background-color: #5a00d1;
     }
   }
 }

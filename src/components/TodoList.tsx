@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getTodos, addTodo, updateTodo, deleteTodo, Todo } from '@/api/todoService';
+import {
+  getTodos,
+  addTodo,
+  updateTodo,
+  deleteTodo,
+  Todo,
+} from '@/api/todoService';
 import styles from '../style/TodoList.module.scss';
 
 export const TodoList: React.FC = () => {
@@ -19,16 +25,16 @@ export const TodoList: React.FC = () => {
     onMutate: async (newTodo) => {
       await queryClient.cancelQueries({ queryKey: ['todos'] });
       const previousTodos = queryClient.getQueryData<Todo[]>(['todos']);
-    
+
       queryClient.setQueryData<Todo[]>(['todos'], (oldTodos = []) => [
         { id: Date.now().toString(), title: newTodo.title },
         ...oldTodos,
       ]);
-    
+
       return { previousTodos };
     },
     onError: (err, _, context) => {
-      console.error('Add Todo Error:', err); 
+      console.error('Add Todo Error:', err);
       if (context?.previousTodos) {
         queryClient.setQueryData(['todos'], context.previousTodos);
       }
@@ -37,23 +43,25 @@ export const TodoList: React.FC = () => {
       // queryClient.invalidateQueries({ queryKey: ['todos'] });
     },
   });
-  
+
   const updateTodoMutation = useMutation({
     mutationFn: updateTodo,
     onMutate: async (updatedTodo) => {
       await queryClient.cancelQueries({ queryKey: ['todos'] });
       const previousTodos = queryClient.getQueryData<Todo[]>(['todos']);
-  
+
       queryClient.setQueryData<Todo[]>(['todos'], (oldTodos = []) =>
         oldTodos.map((todo) =>
-          todo.id === updatedTodo.id ? { ...todo, title: updatedTodo.title } : todo
+          todo.id === updatedTodo.id
+            ? { ...todo, title: updatedTodo.title }
+            : todo
         )
       );
-  
+
       return { previousTodos };
     },
     onError: (err, _, context) => {
-      console.error('Update Todo Error:', err); 
+      console.error('Update Todo Error:', err);
       if (context?.previousTodos) {
         queryClient.setQueryData(['todos'], context.previousTodos);
       }
@@ -62,21 +70,21 @@ export const TodoList: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['todos'] });
     },
   });
-  
+
   const deleteTodoMutation = useMutation({
     mutationFn: deleteTodo,
     onMutate: async (deletedTodoId) => {
       await queryClient.cancelQueries({ queryKey: ['todos'] });
       const previousTodos = queryClient.getQueryData<Todo[]>(['todos']);
-  
+
       queryClient.setQueryData<Todo[]>(['todos'], (oldTodos = []) =>
         oldTodos.filter((todo) => todo.id !== deletedTodoId)
       );
-  
+
       return { previousTodos };
     },
     onError: (err, _, context) => {
-      console.error('Delete Todo Error:', err); 
+      console.error('Delete Todo Error:', err);
       if (context?.previousTodos) {
         queryClient.setQueryData(['todos'], context.previousTodos);
       }
@@ -84,12 +92,12 @@ export const TodoList: React.FC = () => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['todos'] });
     },
-  });  
+  });
 
   const handleAddTodo = () => {
     if (newTask.trim()) {
       addTodoMutation.mutate({ title: newTask });
-      setNewTask(''); 
+      setNewTask('');
     }
   };
 
@@ -121,8 +129,8 @@ export const TodoList: React.FC = () => {
       <p>One Step Closer to Your Goals</p>
       <div className={styles.inputContainer}>
         <input
-          type="text"
-          placeholder="Create new task"
+          type='text'
+          placeholder='Create new task'
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
         />
@@ -135,7 +143,7 @@ export const TodoList: React.FC = () => {
           <li key={todo.id} className={styles.todoItem}>
             <label>
               <input
-                type="checkbox"
+                type='checkbox'
                 defaultChecked={false}
                 onChange={() =>
                   updateTodoMutation.mutate({ id: todo.id, title: todo.title })
@@ -144,7 +152,10 @@ export const TodoList: React.FC = () => {
               {todo.title}
             </label>
             <div>
-              <button onClick={() => openEditModal(todo)} className={styles.editButton}>
+              <button
+                onClick={() => openEditModal(todo)}
+                className={styles.editButton}
+              >
                 ✏️
               </button>
               <button
@@ -161,20 +172,28 @@ export const TodoList: React.FC = () => {
       {isEditModalOpen && currentEditTask && (
         <div className={styles.modalBackdrop}>
           <div className={styles.modal}>
-            <h2>Edit Task</h2>
-            <input
-              type="text"
-              value={currentEditTask.title}
-              onChange={(e) =>
-                setCurrentEditTask({ ...currentEditTask, title: e.target.value })
-              }
-            />
+            <div className={styles.modalHeader}>
+              <h2>Edit Task</h2>
+              <button onClick={closeEditModal} className={styles.closeButton}>
+                ✖
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              <input
+                type='text'
+                value={currentEditTask.title}
+                onChange={(e) =>
+                  setCurrentEditTask({
+                    ...currentEditTask,
+                    title: e.target.value,
+                  })
+                }
+                className={styles.modalInput}
+              />
+            </div>
             <div className={styles.modalActions}>
               <button onClick={handleEditSave} className={styles.saveButton}>
-                Save
-              </button>
-              <button onClick={closeEditModal} className={styles.cancelButton}>
-                Cancel
+                Save 
               </button>
             </div>
           </div>
